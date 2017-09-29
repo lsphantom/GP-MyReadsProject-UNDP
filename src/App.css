@@ -12,7 +12,12 @@ body, .app {
 
 .list-books-title {
   padding: 10px 0;
-  background: #2e7c31;
+  /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#814dce+0,371668+100 */
+  background: #814dce; /* Old browsers */
+  background: -moz-linear-gradient(top,  #814dce 0%, #371668 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top,  #814dce 0%,#371668 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom,  #814dce 0%,#371668 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#814dce', endColorstr='#371668',GradientType=0 ); /* IE6-9 */
   text-align: center;
 }
 .list-books-title h1 {
@@ -53,7 +58,7 @@ body, .app {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: #2e7d32;
+  background: #ff5b18;
   background-image: url('./icons/add.svg');
   background-repeat: no-repeat;
   background-position: center;
@@ -147,7 +152,7 @@ body, .app {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #60ac5d;
+  background: #ff8523;
   background-image: url('./icons/arrow-drop-down.svg');
   background-repeat: no-repeat;
   background-position: center;
