@@ -2,6 +2,7 @@
   "homepage": "https://github.com/lsphantom/reactnd-project-myreads-starter.git",
   "dependencies": {
     "escape-string-regexp": "^1.0.5",
+    "form-serialize": "^0.7.2",
     "prop-types": "^15.6.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",

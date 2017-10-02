@@ -1,11 +1,13 @@
 import React, { Component } from 'react'
 
-
 class BookStatus extends Component {
 
-  handleChange = (e) => {
-    e.preventDefault()
+  componentDidMount () {
 
+  }
+
+  handleChange = (e) => {
+    //const value = e.target.value
   }
 
   render(){

@@ -29,11 +29,16 @@ class BooksApp extends React.Component {
                     } )
     ))
   }
+  updateShelf = (value) => {
+    console.log(value)
+  }
 
   updateQuery = (query) => {
     this.setState({ query: query })
   }
-  
+  clearQuery = (query) => {
+    this.setState({ query: '' })
+  }
 
   render() {
 
@@ -66,7 +71,6 @@ class BooksApp extends React.Component {
           </div>
           <div className="search-books">
             <div className="search-books-results">
-
             <BookList books={this.state.books} query={this.state.query} />
             </div>
           </div>
