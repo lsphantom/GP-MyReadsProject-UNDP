@@ -2,8 +2,7 @@ import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import { Route, Link } from 'react-router-dom'
 import './App.css'
-
-import ListBooks from './ListBooks'
+import BookList from './BookList'
 
 class BooksApp extends React.Component {
   state = {
@@ -13,7 +12,6 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    showSearchPage: false,
     books: [],
     currentlyReading: [],
     wantToRead: [],
@@ -21,19 +19,58 @@ class BooksApp extends React.Component {
     query: ''
   }
 
+
   componentDidMount() {
     BooksAPI.getAll().then( (books) => (
-      this.setState( {books} )
+      this.setState( {books: books,
+                      currentlyReading: books.filter((list) => list.shelf === "currentlyReading" ),
+                      wantToRead: books.filter((list) => list.shelf === "wantToRead"),
+                      read: books.filter((list) => list.shelf === "read")
+                    } )
     ))
   }
 
+  updateQuery = (query) => {
+    this.setState({ query: query })
+  }
+  
+
   render() {
+
 
     return (
       <div className="app">
 
         <Route path="/search" render={() => (
-          <ListBooks books={this.state.books} />
+          <div>
+          <div className="search-books-bar">
+            <Link className="close-search" to="/">Close</Link>
+            <div className="search-books-input-wrapper">
+              {/*
+                NOTES: The search from BooksAPI is limited to a particular set of search terms.
+                You can find these search terms here:
+                https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
+
+                However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
+                you don't find a specific author or title. Every search is limited by search terms.
+              */}
+
+              <input
+                type="text"
+                placeholder="Search by title or author"
+                value={this.state.query}
+                onChange={event => this.updateQuery(event.target.value)}
+              />
+
+            </div>
+          </div>
+          <div className="search-books">
+            <div className="search-books-results">
+
+            <BookList books={this.state.books} query={this.state.query} />
+            </div>
+          </div>
+          </div>
         )}/>
 
 
@@ -48,7 +85,9 @@ class BooksApp extends React.Component {
                   <h2 className="bookshelf-title">Currently Reading</h2>
 
                   <div className="bookshelf-books">
-                    <ol className="books-grid">
+                  <BookList books={this.state.currentlyReading} />
+
+                    {/*<ol className="books-grid">
                       <li>
                         <div className="book">
                           <div className="book-top">
@@ -85,13 +124,15 @@ class BooksApp extends React.Component {
                           <div className="book-authors">Orson Scott Card</div>
                         </div>
                       </li>
-                    </ol>
+                    </ol>*/}
                   </div>
                 </div>
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Want to Read</h2>
                   <div className="bookshelf-books">
-                    <ol className="books-grid">
+                  <BookList books={this.state.wantToRead} />
+
+                    {/*<ol className="books-grid">
                       <li>
                         <div className="book">
                           <div className="book-top">
@@ -128,13 +169,14 @@ class BooksApp extends React.Component {
                           <div className="book-authors">J.K. Rowling</div>
                         </div>
                       </li>
-                    </ol>
+                    </ol>*/}
                   </div>
                 </div>
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Read</h2>
                   <div className="bookshelf-books">
-                    <ol className="books-grid">
+                  <BookList books={this.state.read} />
+                    {/*<ol className="books-grid">
                       <li>
                         <div className="book">
                           <div className="book-top">
@@ -189,7 +231,7 @@ class BooksApp extends React.Component {
                           <div className="book-authors">Mark Twain</div>
                         </div>
                       </li>
-                    </ol>
+                    </ol>*/}
                   </div>
                 </div>
               </div>
