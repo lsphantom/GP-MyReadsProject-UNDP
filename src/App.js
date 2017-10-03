@@ -12,25 +12,37 @@ class BooksApp extends React.Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    books: [],
-    currentlyReading: [],
-    wantToRead: [],
-    read: [],
+    books: {
+      allBooks: [],
+      currentlyReading: [],
+      wantToRead: [],
+      read: [],
+    },
     query: ''
   }
 
 
   componentDidMount() {
-    BooksAPI.getAll().then( (books) => (
-      this.setState( {books: books,
-                      currentlyReading: books.filter((list) => list.shelf === "currentlyReading" ),
-                      wantToRead: books.filter((list) => list.shelf === "wantToRead"),
-                      read: books.filter((list) => list.shelf === "read")
-                    } )
+    BooksAPI.getAll().then( (books) =>(
+      this.setState({
+        books: {
+          allBooks: books,
+          currentlyReading: books.filter((list) => list.shelf === "currentlyReading"),
+          wantToRead: books.filter((list) => list.shelf === "wantToRead"),
+          read: books.filter((list) => list.shelf === "read")
+        }
+      })
     ))
   }
-  updateShelf = (value) => {
-    console.log(value)
+  updateShelf(values) {
+    BooksAPI.update(values[0], values[1]).then(newBooks => {
+      console.log('NEWBOOKS ' + JSON.stringify(newBooks))
+      /*this.setState({
+        books: {
+          newBooks
+        }
+      })*/
+    })
   }
 
   updateQuery = (query) => {
@@ -71,7 +83,11 @@ class BooksApp extends React.Component {
           </div>
           <div className="search-books">
             <div className="search-books-results">
-            <BookList books={this.state.books} query={this.state.query} />
+            <BookList books={this.state.books.allBooks} query={this.state.query} onBookStatusUpdate={
+              (values) => {
+                this.updateShelf(values)
+              }
+            } />
             </div>
           </div>
           </div>
@@ -89,7 +105,11 @@ class BooksApp extends React.Component {
                   <h2 className="bookshelf-title">Currently Reading</h2>
 
                   <div className="bookshelf-books">
-                  <BookList books={this.state.currentlyReading} />
+                  <BookList books={this.state.books.currentlyReading} onBookStatusUpdate={
+                    (values) => {
+                      this.updateShelf(values)
+                    }
+                  } />
 
                     {/*<ol className="books-grid">
                       <li>
@@ -134,7 +154,11 @@ class BooksApp extends React.Component {
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Want to Read</h2>
                   <div className="bookshelf-books">
-                  <BookList books={this.state.wantToRead} />
+                  <BookList books={this.state.books.wantToRead} onBookStatusUpdate={
+                    (values) => {
+                      this.updateShelf(values)
+                    }
+                  }/>
 
                     {/*<ol className="books-grid">
                       <li>
@@ -179,7 +203,11 @@ class BooksApp extends React.Component {
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Read</h2>
                   <div className="bookshelf-books">
-                  <BookList books={this.state.read} />
+                  <BookList books={this.state.books.read} onBookStatusUpdate={
+                    (values) => {
+                      this.updateShelf(values)
+                    }
+                  }/>
                     {/*<ol className="books-grid">
                       <li>
                         <div className="book">
