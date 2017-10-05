@@ -4,6 +4,13 @@ import { Route, Link } from 'react-router-dom'
 import './App.css'
 import BookList from './BookList'
 
+const localBooks = JSON.parse(localStorage.getItem('storedBooks'))
+const localBookStatus = JSON.parse(localStorage.getItem('booksStatus'))
+const bookId = "nggnmAEACAAJ" //For testing since it always returns the same promise
+const shelf = "currentlyReading" //For testing since it always returns the same promise
+
+
+
 class BooksApp extends React.Component {
   state = {
     /**
@@ -18,32 +25,145 @@ class BooksApp extends React.Component {
       wantToRead: [],
       read: [],
     },
+    bookStatusList: {},
     query: ''
   }
 
-
   componentDidMount() {
-    BooksAPI.getAll().then( (books) =>(
+    if(localBooks !== null){
+      //Set state from localStorage if available
       this.setState({
         books: {
-          allBooks: books,
-          currentlyReading: books.filter((list) => list.shelf === "currentlyReading"),
-          wantToRead: books.filter((list) => list.shelf === "wantToRead"),
-          read: books.filter((list) => list.shelf === "read")
+          allBooks: localBooks,
+          currentlyReading: localBooks.filter((list) => list.shelf === "currentlyReading"),
+          wantToRead: localBooks.filter((list) => list.shelf === "wantToRead"),
+          read: localBooks.filter((list) => list.shelf === "read")
         }
       })
-    ))
+      this.setState({
+        bookStatusList: localBookStatus
+      })
+      console.log('State set from localStorage')
+    }else{
+      //Get the books and set them to component state
+      BooksAPI.getAll().then( (books) =>(
+        this.setState({
+          books: {
+            allBooks: books,
+            currentlyReading: books.filter((list) => list.shelf === "currentlyReading"),
+            wantToRead: books.filter((list) => list.shelf === "wantToRead"),
+            read: books.filter((list) => list.shelf === "read")
+          }
+        })
+      ))
+      //Send the books status to localStorage
+      BooksAPI.update(bookId, shelf).then(status =>(localStorage.setItem('booksStatus', JSON.stringify(status))) )
+      //Collect the books and add them to localStorage
+      BooksAPI.getAll().then((books) =>(localStorage.setItem('storedBooks', JSON.stringify(books))))
+      console.log('State set from server')
+    }
+
   }
+
   updateShelf(values) {
-    BooksAPI.update(values[0], values[1]).then(newBooks => {
-      console.log('NEWBOOKS ' + JSON.stringify(newBooks))
-      /*this.setState({
-        books: {
-          newBooks
-        }
-      })*/
+    //VALUES: (0)BookID, (1)TargetShelf, (2)OriginShelf
+
+    //Remove from current shelf
+    let currentlyReadingArray = this.state.bookStatusList.currentlyReading.filter((takeout) => takeout !== values[0])
+    let wantToReadArray = this.state.bookStatusList.wantToRead.filter((takeout) => takeout !== values[0])
+    let readArray = this.state.bookStatusList.read.filter((takeout) => takeout !== values[0])
+    //Add to target shelf
+    if (values[1] === "currentlyReading"){
+      currentlyReadingArray = currentlyReadingArray.concat(values[0])
+    } else if (values[1] === "wantToRead"){
+      wantToReadArray = wantToReadArray.concat(values[0])
+    } else if (values[1] === "read"){
+      readArray = readArray.concat(values[0])
+    }
+
+    //Update state based on new arrays
+    this.setState({
+      bookStatusList: {
+        currentlyReading: currentlyReadingArray,
+        wantToRead: wantToReadArray,
+        read: readArray
+      }
     })
+
+    //(REMOVE) filter through current arrays and update state.books
+    if (values[2] === "currentlyReading"){
+      BooksAPI.get(values[0]).then((mango) => {
+        this.setState((state)=>({
+          books: {
+            currentlyReading: state.books.currentlyReading.filter((takeout) => takeout.id !== mango.id),
+            wantToRead: state.books.wantToRead,
+            read: state.books.read
+          }
+        }))
+      })
+    } else if (values[2] === "wantToRead"){
+      BooksAPI.get(values[0]).then((pineapple) => {
+        this.setState((state)=>({
+          books: {
+            currentlyReading: state.books.currentlyReading,
+            wantToRead: state.books.wantToRead.filter((takeout) => takeout.id !== pineapple.id),
+            read: state.books.read
+          }
+        }))
+      })
+    } else if (values[2] === "read"){
+      BooksAPI.get(values[0]).then((watermelon) => {
+        this.setState((state)=>({
+          books: {
+            currentlyReading: state.books.currentlyReading,
+            wantToRead: state.books.wantToRead,
+            read: state.books.read.filter((takeout) => takeout.id !== watermelon.id)
+          }
+        }))
+      })
+    }
+
+    //(ADD) Map through current arrays and update state.books
+    if(values[1] === "currentlyReading"){
+      BooksAPI.get(values[0]).then((mango) => {
+        this.setState((state)=>({
+          books: {
+            currentlyReading: state.books.currentlyReading.concat([mango]),
+            wantToRead: state.books.wantToRead,
+            read: state.books.read
+          }
+        }))
+      })
+      localStorage.setItem('storedBooks', JSON.stringify(this.state.books))
+      localStorage.setItem('booksStatus', JSON.stringify(this.state.bookStatusList))
+    } else if (values[1] === "wantToRead") {
+      BooksAPI.get(values[0]).then((pineapple) => {
+        this.setState((state)=>({
+          books: {
+            currentlyReading: state.books.currentlyReading,
+            wantToRead: state.books.wantToRead.concat([pineapple]),
+            read: state.books.read
+          }
+        }))
+      })
+      localStorage.setItem('storedBooks', JSON.stringify(this.state.books))
+      localStorage.setItem('booksStatus', JSON.stringify(this.state.bookStatusList))
+    } else if (values[1] === "read") {
+      BooksAPI.get(values[0]).then((watermelon) => {
+        this.setState((state)=>({
+          books: {
+            currentlyReading: state.books.currentlyReading,
+            wantToRead: state.books.wantToRead,
+            read: state.books.read.concat([watermelon])
+          }
+        }))
+      })
+      localStorage.setItem('storedBooks', JSON.stringify(this.state.books))
+      localStorage.setItem('booksStatus', JSON.stringify(this.state.bookStatusList))
+    }
+
   }
+
 
   updateQuery = (query) => {
     this.setState({ query: query })
@@ -52,8 +172,14 @@ class BooksApp extends React.Component {
     this.setState({ query: '' })
   }
 
-  render() {
 
+
+  clearLocalStorage = () => {
+    localStorage.removeItem('storedBooks')
+    console.log('Local storage cleared!')
+  }
+
+  render() {
 
     return (
       <div className="app">
@@ -83,7 +209,7 @@ class BooksApp extends React.Component {
           </div>
           <div className="search-books">
             <div className="search-books-results">
-            <BookList books={this.state.books.allBooks} query={this.state.query} onBookStatusUpdate={
+            <BookList books={this.state.books.allBooks} parentShelf="" query={this.state.query} onBookStatusUpdate={
               (values) => {
                 this.updateShelf(values)
               }
@@ -102,10 +228,12 @@ class BooksApp extends React.Component {
             <div className="list-books-content">
               <div>
                 <div className="bookshelf">
+                <button onClick={this.clearLocalStorage}>Clear localStorage</button>
+                <button onClick={this.testAPI}>Test API func</button>
                   <h2 className="bookshelf-title">Currently Reading</h2>
 
                   <div className="bookshelf-books">
-                  <BookList books={this.state.books.currentlyReading} onBookStatusUpdate={
+                  <BookList books={this.state.books.currentlyReading} parentShelf="currentlyReading" onBookStatusUpdate={
                     (values) => {
                       this.updateShelf(values)
                     }
@@ -154,7 +282,7 @@ class BooksApp extends React.Component {
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Want to Read</h2>
                   <div className="bookshelf-books">
-                  <BookList books={this.state.books.wantToRead} onBookStatusUpdate={
+                  <BookList books={this.state.books.wantToRead} parentShelf="wantToRead" onBookStatusUpdate={
                     (values) => {
                       this.updateShelf(values)
                     }
@@ -203,7 +331,7 @@ class BooksApp extends React.Component {
                 <div className="bookshelf">
                   <h2 className="bookshelf-title">Read</h2>
                   <div className="bookshelf-books">
-                  <BookList books={this.state.books.read} onBookStatusUpdate={
+                  <BookList books={this.state.books.read} parentShelf="read" onBookStatusUpdate={
                     (values) => {
                       this.updateShelf(values)
                     }

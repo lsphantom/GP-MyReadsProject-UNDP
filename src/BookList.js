@@ -16,12 +16,19 @@ class BookList extends Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    showSearchPage: false
+    showSearchPage: false,
+    currentShelf: ''
+  }
+
+  componentDidMount(){
+    this.setState({
+      currentShelf: this.props.parentShelf
+    })
   }
 
   handleChange = (e) => {
     //e.preventDefault()
-    const values = [e.target.id, e.target.value]
+    const values = [e.target.id, e.target.value, this.state.currentShelf]
     //const bookId = e.target.id
     //const shelf = e.target.value
 
@@ -58,7 +65,7 @@ class BookList extends Component {
               <div className="book-top">
                 <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
                 <div className="book-shelf-changer">
-                  <select id={book.id} onChange={this.handleChange}>
+                  <select id={book.id} value={this.state.currentShelf} onChange={this.handleChange}>
                     <option value="none" disabled>Move to...</option>
                     <option value="currentlyReading">Currently Reading</option>
                     <option value="wantToRead">Want to Read</option>
