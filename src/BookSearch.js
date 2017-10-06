@@ -1,36 +1,26 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router-dom'
-import * as BooksAPI from './BooksAPI'
 import PropTypes from 'prop-types'
 import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
-import BookStatus from './BookStatus'
+import BookList from './BookList'
 
-class ListBooks extends Component {
+class BookSearch extends Component {
   static propTypes = {
+    onBookChange: PropTypes.func.isRequired,
     books: PropTypes.array.isRequired
   }
 
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    showSearchPage: false,
     books: [],
-    currentlyReading: [],
-    wantToRead: [],
-    read: [],
     query: ''
   }
-
   componentDidMount() {
-    BooksAPI.getAll().then( (books) => (
-      this.setState( {books} )
-    ))
+    this.setState({
+      books: this.props.books
+    })
   }
+
   updateQuery = (query) => {
     this.setState({ query: query})
   }
@@ -73,20 +63,7 @@ class ListBooks extends Component {
           </div>
         </div>
         <div className="search-books-results">
-        <ol className="books-grid">
-        {showingBooks.map(book => (
-          <li key={book.id}>
-            <div className="book">
-              <div className="book-top">
-                <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.smallThumbnail})` }}></div>
-                <BookStatus />
-              </div>
-              <div className="book-title">{book.title}</div>
-              <div className="book-authors">{book.authors}</div>
-            </div>
-          </li>
-        ))}
-        </ol>
+          <BookList books={showingBooks} onBookChange={this.updateQuery} />
         </div>
       </div>
     )
@@ -94,4 +71,4 @@ class ListBooks extends Component {
 }
 
 
-export default ListBooks
+export default BookSearch
