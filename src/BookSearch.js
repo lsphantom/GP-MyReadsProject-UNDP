@@ -63,7 +63,7 @@ class BookSearch extends Component {
           </div>
         </div>
         <div className="search-books-results">
-          <BookList books={showingBooks} onBookChange={this.updateQuery} />
+          <BookList books={showingBooks} onBookChange={this.props.onBookChange} />
         </div>
       </div>
     )
