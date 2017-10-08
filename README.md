@@ -85,6 +85,4 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Contributing
 
-This repository is from the starter code for _all_ Udacity students. Therefore, pull requests will not be accepted.
-
-For details, check out [CONTRIBUTING.md](CONTRIBUTING.md).
+Pull requests will not be accepted. This repository is for a Udacity project submission only.

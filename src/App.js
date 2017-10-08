@@ -11,7 +11,7 @@ import BookSearch from './BookSearch'
 class BooksApp extends React.Component {
   state = {
     books: [],
-    query: ''
+    searchResults: []
   }
 
   componentDidMount() {
@@ -24,37 +24,35 @@ class BooksApp extends React.Component {
     })
   }
 
+  changeOneBook = (bookId) => {
+    BooksAPI.get(bookId).then((updatedBook)=> {
+     let newBookList = this.state.books.filter((uB) => (uB.id !== updatedBook.id)).concat(updatedBook)
+     this.setState({
+      books: newBookList
+     })
+    })
+  }
+
   updateBooks = (book, shelf) => {
     BooksAPI.update(book, shelf).then(() => {
-      this.goFetchBooks()
+      this.changeOneBook(book.id)
     })
   }
 
-  //Search Fx
-  /*
-    NOTES: The search from BooksAPI is limited to a particular set of search terms.
-    You can find these search terms here:
-    https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-
-    However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-    you don't find a specific author or title. Every search is limited by search terms.
-  */
-  updateQuery = (query) => {
-    this.setState({ query: query })
-  }
-  clearQuery = (query) => {
-    this.setState({ query: '' })
-  }
-
-  testAPI = () => {
-    const testBook = this.state.books[0]
-    console.log(testBook)
-    BooksAPI.update(testBook, "wantToRead").then(() => {
-      this.goFetchBooks()
+  searchAPI = (query) => {
+    BooksAPI.search(query, 20).then((results) => {
+      if(Array.isArray(results)){
+        this.setState({searchResults: results.slice(0,15)})   
+      } else {
+        this.setState({searchResults: []})
+      }   
     })
   }
-
-
+  clearSearch = () => {
+    this.setState({
+      searchResults: []
+    })
+  }
 
 
   render() {
@@ -64,18 +62,14 @@ class BooksApp extends React.Component {
 
     return (
       <div className="app">
-
         <Route exact path="/" render={() => (
           <div className="list-books">
             <div className="list-books-title">
               <h1>MyReads Project</h1>
             </div>
             <div className="list-books-content">
-              <div>
                 <div className="bookshelf">
-                {/*<button onClick={this.testAPI}>Test API func</button>*/}
                   <h2 className="bookshelf-title">Currently Reading</h2>
-
                   <div className="bookshelf-books">
                   <BookList books={currentlyReadingList} onBookChange={this.updateBooks} />
                   </div>
@@ -92,7 +86,6 @@ class BooksApp extends React.Component {
                   <BookList books={readList} onBookChange={this.updateBooks} />
                   </div>
                 </div>
-              </div>
             </div>
             <div className="open-search">
               <Link to="/search">Add a book</Link>
@@ -103,25 +96,7 @@ class BooksApp extends React.Component {
 
 
         <Route path="/search" render={() => (
-          <div>
-          <div className="search-books-bar">
-            <Link className="close-search" to="/">Close</Link>
-            <div className="search-books-input-wrapper">
-              <input
-                type="text"
-                placeholder="Search by title or author"
-                value={this.state.query}
-                onChange={event => this.updateQuery(event.target.value)}
-              />
-
-            </div>
-          </div>
-          <div className="search-books">
-            <div className="search-books-results">
-            <BookSearch books={this.state.books} query={this.state.query} onBookChange={this.updateBooks} />
-            </div>
-          </div>
-          </div>
+            <BookSearch books={this.state.searchResults} BookSearch={this.searchAPI} onBookChange={this.updateBooks} clearSearch={this.clearSearch} />
         )}/>
 
 
