@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 import PropTypes from 'prop-types'
 import escapeRegExp from 'escape-string-regexp'
 import sortBy from 'sort-by'
-import BookList from './BookList'
+import Book from './Book'
 
 class BookSearch extends Component {
   static propTypes = {
@@ -55,7 +55,14 @@ class BookSearch extends Component {
           </div>
         </div>
         <div className="search-books-results">
-          <BookList books={showingBooks} onBookChange={this.props.onBookChange} />
+        <ol className="books-grid">
+        {showingBooks.map((book) => (
+          <Book book={book} shelf={book.shelf ? book.shelf : "none"} key={book.id} onChange={(shelf) => {
+              this.props.onBookChange(book, shelf)
+            }} />
+        ))
+        }
+        </ol>
         </div>
       </div>
     )

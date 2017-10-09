@@ -2,10 +2,8 @@ import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import { Route, Link } from 'react-router-dom'
 import './App.css'
-import BookList from './BookList'
+import Shelf from './Shelf'
 import BookSearch from './BookSearch'
-
-
 
 
 class BooksApp extends React.Component {
@@ -42,10 +40,10 @@ class BooksApp extends React.Component {
   searchAPI = (query) => {
     BooksAPI.search(query, 20).then((results) => {
       if(Array.isArray(results)){
-        this.setState({searchResults: results.slice(0,15)})   
+        this.setState({searchResults: results.slice(0,15)})
       } else {
         this.setState({searchResults: []})
-      }   
+      }
     })
   }
   clearSearch = () => {
@@ -68,24 +66,9 @@ class BooksApp extends React.Component {
               <h1>MyReads Project</h1>
             </div>
             <div className="list-books-content">
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Currently Reading</h2>
-                  <div className="bookshelf-books">
-                  <BookList books={currentlyReadingList} onBookChange={this.updateBooks} />
-                  </div>
-                </div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Want to Read</h2>
-                  <div className="bookshelf-books">
-                  <BookList books={wantToReadList} onBookChange={this.updateBooks} />
-                  </div>
-                </div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Read</h2>
-                  <div className="bookshelf-books">
-                  <BookList books={readList} onBookChange={this.updateBooks} />
-                  </div>
-                </div>
+                <Shelf shelfName={'Currently Reading'} shelf="currentlyReading" books={currentlyReadingList} onBookChange={this.updateBooks} />
+                <Shelf shelfName={'Want to Read'} shelf="wantToRead" books={wantToReadList} onBookChange={this.updateBooks} />
+                <Shelf shelfName={'Read'} shelf="read" books={readList} onBookChange={this.updateBooks} />
             </div>
             <div className="open-search">
               <Link to="/search">Add a book</Link>

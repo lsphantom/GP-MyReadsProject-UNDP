@@ -7,6 +7,7 @@ class Book extends Component {
 static propTypes = {
   book: PropTypes.object.isRequired
 }
+
 changeShelf = (e) => {
   this.props.onChange(e.target.value)
 }
