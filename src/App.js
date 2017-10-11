@@ -23,7 +23,7 @@ class BooksApp extends React.Component {
   }
 
   changeOneBook = (bookId) => {
-    BooksAPI.get(bookId).then((updatedBook)=> {
+    BooksAPI.get(bookId).then((updatedBook) => {
      let newBookList = this.state.books.filter((uB) => (uB.id !== updatedBook.id)).concat(updatedBook)
      this.setState({
       books: newBookList
@@ -40,12 +40,30 @@ class BooksApp extends React.Component {
   searchAPI = (query) => {
     BooksAPI.search(query, 20).then((results) => {
       if(Array.isArray(results)){
-        this.setState({searchResults: results.slice(0,15)})
+        this.findBookShelf(results)
+        this.setState({searchResults: results})
       } else {
         this.setState({searchResults: []})
       }
     })
   }
+
+  findBookShelf = (results) => {
+    let allBooks = this.state.books
+    for (let book of results) {
+      book.shelf = "none"
+    }
+
+    for (let book of results) {
+      for (let bu of allBooks) {
+        if (bu.id === book.id) {
+          book.shelf = bu.shelf
+        }
+      }
+    }
+    return results
+  }
+  
   clearSearch = () => {
     this.setState({
       searchResults: []
@@ -54,9 +72,20 @@ class BooksApp extends React.Component {
 
 
   render() {
-    const currentlyReadingList = this.state.books.filter((book) => (book.shelf === "currentlyReading"))
-    const wantToReadList = this.state.books.filter((book) => (book.shelf === "wantToRead"))
-    const readList = this.state.books.filter((book) => (book.shelf === "read"))
+    const shelves = [
+    { id: 'currentlyReading',
+      title: 'Currently Reading',
+      books: this.state.books.filter((book) => (book.shelf === "currentlyReading"))
+    },
+    { id: 'wantToRead',
+      title: 'Want to Read',
+      books: this.state.books.filter((book) => (book.shelf === "wantToRead"))
+    },
+    { id: 'read',
+      title: 'Read',
+      books: this.state.books.filter((book) => (book.shelf === "read"))
+    }
+    ]
 
     return (
       <div className="app">
@@ -66,9 +95,9 @@ class BooksApp extends React.Component {
               <h1>MyReads Project</h1>
             </div>
             <div className="list-books-content">
-                <Shelf shelfName={'Currently Reading'} shelf="currentlyReading" books={currentlyReadingList} onBookChange={this.updateBooks} />
-                <Shelf shelfName={'Want to Read'} shelf="wantToRead" books={wantToReadList} onBookChange={this.updateBooks} />
-                <Shelf shelfName={'Read'} shelf="read" books={readList} onBookChange={this.updateBooks} />
+            { shelves.map((shelf, index) => (
+              <Shelf key={index} id={shelf.id} title={shelf.title} books={shelf.books} onBookChange={this.updateBooks} />
+              ))}             
             </div>
             <div className="open-search">
               <Link to="/search">Add a book</Link>
@@ -80,7 +109,7 @@ class BooksApp extends React.Component {
 
         <Route path="/search" render={() => (
             <BookSearch books={this.state.searchResults} BookSearch={this.searchAPI} onBookChange={this.updateBooks} clearSearch={this.clearSearch} />
-        )}/>
+          )}/>
 
 
       </div>

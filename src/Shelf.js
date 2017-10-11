@@ -7,16 +7,15 @@ class Shelf extends Component {
   static propTypes =  {
     books: PropTypes.array.isRequired,
     onBookChange: PropTypes.func.isRequired,
-    shelfName: PropTypes.string.isRequired,
-    shelf: PropTypes.string.isRequired
+    title: PropTypes.string.isRequired
   }
 
   render(){
     return(
           <div className="bookshelf">
-            <h2 className="bookshelf-title">{this.props.shelfName}</h2>
+            <h2 className="bookshelf-title">{this.props.title}</h2>
             <div className="bookshelf-books">
-              <BookList books={this.props.books} shelf={this.props.shelf} onBookChange={this.props.onBookChange} />
+              <BookList books={this.props.books} shelf={this.props.id} onBookChange={this.props.onBookChange} />
             </div>
           </div>
     )

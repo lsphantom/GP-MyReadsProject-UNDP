@@ -12,7 +12,6 @@ class BookSearch extends Component {
   }
 
   state = {
-    books: [],
     query: ''
   }
   componentDidMount() {
@@ -56,12 +55,11 @@ class BookSearch extends Component {
         </div>
         <div className="search-books-results">
         <ol className="books-grid">
-        {showingBooks.map((book) => (
-          <Book book={book} shelf={book.shelf ? book.shelf : "none"} key={book.id} onChange={(shelf) => {
+        {showingBooks.map((book, index) => (
+          <Book book={book} shelf={book.shelf} key={index} onChange={(shelf) => {
               this.props.onBookChange(book, shelf)
             }} />
-        ))
-        }
+        ))}
         </ol>
         </div>
       </div>

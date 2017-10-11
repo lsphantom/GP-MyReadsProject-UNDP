@@ -12,8 +12,9 @@ changeShelf = (e) => {
   this.props.onChange(e.target.value)
 }
 
+
 render(){
-  const book = this.props.book
+  const {book} = this.props
 
   return(
     <li key={book.id}>
@@ -23,7 +24,7 @@ render(){
             book.imageLinks ? `url(${book.imageLinks.smallThumbnail})` : `url(http://via.placeholder.com/128x193?text=No%20Cover)`
           )}}></div>
           <div className="book-shelf-changer">
-            <select value={this.props.shelf} onChange={this.changeShelf}>
+            <select value={book.shelf} onChange={this.changeShelf}>
               <option value="none" disabled>Move to...</option>
               <option value="currentlyReading">Currently Reading</option>
               <option value="wantToRead">Want to Read</option>
