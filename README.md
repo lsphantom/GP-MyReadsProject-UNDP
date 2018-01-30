@@ -1,6 +1,9 @@
-# MyReads Project
+# Mod MyReads Project
 
 This is a project for Udacity's React Fundamentals course.
+This branch is a modified version of the react app to deploy to github-pages.
+
+[Demo](https://lsphantom.github.io/myreads-project/)
 
 ## Testdrive
 
@@ -63,4 +66,4 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Contributing
 
-Pull requests will not be accepted. This repository is for a Udacity project submission only.
+Pull requests will not be accepted. This repository is for a Udacity project.
