@@ -93,6 +93,7 @@ class BooksApp extends React.Component {
           <div className="list-books">
             <div className="list-books-title">
               <h1>MyReads Project</h1>
+              <p>by LSPhantom</p>
             </div>
             <div className="list-books-content">
             { shelves.map((shelf, index) => (

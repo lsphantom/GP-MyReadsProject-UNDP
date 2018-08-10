@@ -16,6 +16,8 @@ changeShelf = (e) => {
 render(){
   const {book} = this.props
 
+  const shelfClass = this.props.shelf;
+
   return(
     <li key={book.id}>
       <div className="book">
@@ -23,7 +25,7 @@ render(){
           <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: (
             book.imageLinks ? `url(${book.imageLinks.smallThumbnail})` : `url(http://via.placeholder.com/128x193?text=No%20Cover)`
           )}}></div>
-          <div className="book-shelf-changer">
+          <div className={`book-shelf-changer ${shelfClass}`}>
             <select value={book.shelf} onChange={this.changeShelf}>
               <option value="none" disabled>Move to...</option>
               <option value="currentlyReading">Currently Reading</option>

@@ -14,18 +14,23 @@ body, .app {
   padding: 10px 0;
   /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#814dce+0,371668+100 */
   background: #814dce; /* Old browsers */
-  background: -moz-linear-gradient(top,  #814dce 0%, #371668 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(top,  #814dce 0%,#371668 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom,  #814dce 0%,#371668 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#814dce', endColorstr='#371668',GradientType=0 ); /* IE6-9 */
+  background: -moz-linear-gradient(top,  #555 0%, #000 100%); /* FF3.6-15 */
+  background: -webkit-linear-gradient(top,  #555 0%,#000 100%); /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom,  #555 0%,#000 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#555555', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
   text-align: center;
 }
 .list-books-title h1 {
-  font-weight: 400;
+  font-family: "Raleway", sans-serif;
+  /*font-weight: 400;*/
   margin: 0;
   color: white;
 }
-
+.list-books-title p {
+  font-size: 10px;
+  color: #555;
+  margin: -4px 0;
+}
 .list-books-content {
   padding: 0 0 80px;
   flex: 1;
@@ -42,10 +47,17 @@ body, .app {
 }
 
 .bookshelf-title {
-  border-bottom: 1px solid #dedede;
+  /*border-bottom: 1px solid #dedede;*/
+  border-left: 4px solid #444;
+  padding-left: 20px;
+  font-size: 12px;
+  font-style: italic;
+  /*color: #0e58ff;*/
 }
 .bookshelf-books {
   text-align: center;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 5px 2px -2px rgba(30,30,30,0.1);
 }
 
 .open-search {
@@ -163,6 +175,16 @@ body, .app {
   background-size: 20px;
   box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
 }
+.book-shelf-changer.currentlyReading {
+  background-color: #8B5FFF;
+}
+.book-shelf-changer.wantToRead {
+  background-color: #4ED0F8;
+}
+.book-shelf-changer.read {
+  background-color: #F10C5A;
+}
+
 .book-shelf-changer select {
   width: 100%;
   height: 100%;
